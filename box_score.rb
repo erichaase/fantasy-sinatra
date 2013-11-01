@@ -9,8 +9,8 @@ class BoxScore
 
   def initialize (gid)
     json = JSON.parse(open(BS_URI % gid.to_s).read)
-    bses = json['gamecast']['stats']['player']['home'][0...-1] + json['gamecast']['stats']['player']['away'][0...-1]
 
+    bses = json['gamecast']['stats']['player']['home'][0...-1] + json['gamecast']['stats']['player']['away'][0...-1]
     @bses = []
     bses.each { |bse| @bses << BoxScoreEntry.new(bse) }
   end
