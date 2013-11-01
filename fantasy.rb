@@ -6,6 +6,7 @@ get '/' do
   ScoreBoard.new.bss.each { |bs| bs.bses.each { |bse| bses << bse } }
   bses.sort!
 
+  # TODO use %{ to build string instead
   output =  ""
   output << "<html><head><title>NBA Fantasy Player Rater</title></head><body><table border=\"1\">\n"
   output << "\t<tr>\n"
