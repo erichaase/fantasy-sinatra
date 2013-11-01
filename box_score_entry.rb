@@ -45,7 +45,7 @@ class BoxScoreEntry
   end
 
   def <=> (x)
-    self.rating <=> x.rating
+    x.rating <=> self.rating
   end
 
   def to_s
@@ -58,5 +58,23 @@ class BoxScoreEntry
       "#{@tpm}-#{@tpa}",
       "#{@pts}-#{@reb}-#{@ast}",
       "#{@stl}-#{@blk}-#{@to}"]
+  end
+
+  def to_html
+    output =  ""
+    output << "\t<tr>\n"
+    output << "\t\t<td>%s</td>\n"   % "#{@firstName} #{@lastName}"
+    output << "\t\t<td>%d</td>\n"   % @min
+    output << "\t\t<td>%s</td>\n"   % "#{@fgm}-#{@fga}"
+    output << "\t\t<td>%s</td>\n"   % "#{@ftm}-#{@fta}"
+    output << "\t\t<td>%s</td>\n"   % "#{@tpm}-#{@tpa}"
+    output << "\t\t<td>%d</td>\n"   % @pts
+    output << "\t\t<td>%d</td>\n"   % @reb
+    output << "\t\t<td>%d</td>\n"   % @ast
+    output << "\t\t<td>%d</td>\n"   % @stl
+    output << "\t\t<td>%d</td>\n"   % @blk
+    output << "\t\t<td>%d</td>\n"   % @to
+    output << "\t\t<td>%.1f</td>\n" % @r['TOT']
+    output << "\t</tr>\n"
   end
 end
