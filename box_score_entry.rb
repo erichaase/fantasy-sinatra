@@ -1,8 +1,8 @@
 class BoxScoreEntry
   def initialize (json)
     @id             = json['id'].to_i
-    @firstName      = json['firstName']
-    @lastName       = json['lastName']
+    @fname          = json['firstName']
+    @lname          = json['lastName']
     @positionAbbrev = json['positionAbbrev']
     @jersey         = json['jersey'].to_i
     @active         = json['active']
@@ -51,7 +51,7 @@ class BoxScoreEntry
   def to_s
     "%5.1f  %-24s  %4.1f  %5s  %5s  %5s  %8s  %8s" % [
       @r['TOT'],
-      "#{@firstName} #{@lastName}",
+      "#{@fname} #{@lname}",
       @min,
       "#{@fgm}-#{@fga}",
       "#{@ftm}-#{@fta}",
@@ -63,7 +63,7 @@ class BoxScoreEntry
   def to_html
     output =  ""
     output << "\t<tr>\n"
-    output << "\t\t<td>%s</td>\n"   % "#{@firstName} #{@lastName}"
+    output << "\t\t<td>%s</td>\n"   % "#{@fname} #{@lname}"
     output << "\t\t<td>%d</td>\n"   % @min
     output << "\t\t<td>%s</td>\n"   % "#{@fgm}-#{@fga}"
     output << "\t\t<td>%s</td>\n"   % "#{@ftm}-#{@fta}"
@@ -74,6 +74,7 @@ class BoxScoreEntry
     output << "\t\t<td>%d</td>\n"   % @stl
     output << "\t\t<td>%d</td>\n"   % @blk
     output << "\t\t<td>%d</td>\n"   % @to
+    output << %Q`\t\t<td><a target="_blank" href="http://basketball.fantasysports.yahoo.com/nba/86590/playersearch?&search=%s">yahoo</a></td>\n` % "#{@fname}%20#{@lname}"
     output << "\t\t<td>%.1f</td>\n" % @r['TOT']
     output << "\t</tr>\n"
   end
