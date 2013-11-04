@@ -2,8 +2,16 @@ require 'sinatra'
 require './score_board'
 
 get '/' do
+  if params['date']
+    redirect "/ratings?date=#{params['date']}"
+  else
+    redirect '/ratings'
+  end
+end
+
+get '/ratings' do
   bses = []
-  ScoreBoard.new.bss.each { |bs| bs.bses.each { |bse| bses << bse } }
+  ScoreBoard.new(params['date']).bss.each { |bs| bs.bses.each { |bse| bses << bse } }
   bses.sort!
 
   output = <<END

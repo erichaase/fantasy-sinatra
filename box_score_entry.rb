@@ -70,19 +70,21 @@ class BoxScoreEntry
     end
 
     # TODO Add rating as a count bubble: http://www.intelligrape.com/blog/2012/10/18/setting-count-bubble-in-jquery-mobile-accordian-head/
-    # TODO Include parent box score for minutes game log
-    # TODO Validate HTML
+    # TODO Include parent box score (for minutes played and game log link)
+
+    fname = @fname.gsub(/\s/, '%20')
+    lname = @lname.gsub(/\s/, '%20')
     output = <<END
 		<div data-role="collapsible" data-theme="#{data_theme}" data-content-theme="#{data_theme}">
 			<h3>#{@fname} #{@lname} [#{@min}/48, #{@r['TOT'].to_i}]</h3>
 			<ul data-role="listview" data-inset="false" data-theme="c">
 				<li>#{@fgm}-#{@fga} #{@ftm}-#{@fta} #{@tpm}-#{@tpa}, #{@pts}-#{@reb}-#{@ast}, #{@stl}-#{@blk}-#{@to}</li>
 				<li><a href="#">Profile</a></li>
-				<li><a target="_blank" href="http://basketball.fantasysports.yahoo.com/nba/86590/playersearch?&search=#{@fname}%20#{@lname}">Yahoo Search</a></li>
+				<li><a target="_blank" href="http://basketball.fantasysports.yahoo.com/nba/86590/playersearch?&amp;search=#{fname}%20#{lname}">Yahoo Search</a></li>
 				<li><a target="_blank" href="http://espn.go.com/nba/player/gamelog/_/id/#{@id}/">Game Log</a></li>
 				<li><a href="#">Box Score</a></li>
 				<li><a href="#">Depth Chart</a></li>
-				<li><a target="_blank" href="http://www.rotoworld.com/content/playersearch.aspx?searchname=#{@lname},%20#{@fname}">Rotoworld</a></li>
+				<li><a target="_blank" href="http://www.rotoworld.com/content/playersearch.aspx?searchname=#{lname},%20#{fname}">Rotoworld</a></li>
 			</ul>
 		</div>
 END
