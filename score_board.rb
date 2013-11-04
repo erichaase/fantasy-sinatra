@@ -9,8 +9,7 @@ class ScoreBoard
 
   def initialize (date)
     url = date ? SB_URI + "?date=20#{date}" : SB_URI
-    gids = open(url).read.scan(GIDS_RE).map { |gid| gid[0].strip.to_i }
-    gids.uniq!
+    gids = open(url).read.scan(GIDS_RE).map { |gid| gid[0].strip.to_i }.uniq
 
     @bss = []
     gids.each { |gid| bss << BoxScore.new(gid) }
