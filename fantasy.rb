@@ -2,11 +2,20 @@ require 'sinatra'
 require './score_board'
 
 get '/' do
-  if params['date']
-    redirect "/ratings?date=#{params['date']}"
+  if params.size > 0
+    url = '/ratings?'
+    params.keys.each do |param|
+      if url == '/ratings?'
+        url << "#{param}=#{params[param]}"
+      else
+        url << "&#{param}=#{params[param]}"
+      end
+    end
   else
-    redirect '/ratings'
+    url = '/ratings'
   end
+
+  redirect url
 end
 
 get '/ratings' do

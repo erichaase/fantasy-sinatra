@@ -61,7 +61,7 @@ class BoxScoreEntry
   end
 
   def to_html
-    if ENV['PLAYERS'] && (ENV['PLAYERS'].split(',').map { |id| id.to_i }.include? (@id))
+    if ENV['PLAYERS'] && (ENV['PLAYERS'].split(/\s*,\s*/).map { |id| id.to_i }.include? (@id))
       data_theme = "e"
     elsif @r['TOT'] >= 0
       data_theme = "b"
