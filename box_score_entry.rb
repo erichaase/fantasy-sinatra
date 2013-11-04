@@ -1,5 +1,6 @@
 class BoxScoreEntry
-  def initialize (json)
+  def initialize (bs, json)
+    @bs             = bs
     @id             = json['id'].to_i
     @fname          = json['firstName']
     @lname          = json['lastName']
@@ -23,6 +24,7 @@ class BoxScoreEntry
     @to             = json['turnovers'].to_i
     @plusMinus      = json['plusMinus'].to_i
 
+    # TODO verify calculation of ratings
     @r = {}
     if (json['fg'][/\s*-\s*/])
       @r['TOT'] = -99.0
@@ -40,6 +42,10 @@ class BoxScoreEntry
     end
   end
 
+  def played?
+    @min > 0
+  end
+
   def rating
     @r['TOT']
   end
@@ -48,38 +54,24 @@ class BoxScoreEntry
     x.rating <=> self.rating
   end
 
-  def to_s
-    "%5.1f  %-24s  %4.1f  %5s  %5s  %5s  %8s  %8s" % [
-      @r['TOT'],
-      "#{@fname} #{@lname}",
-      @min,
-      "#{@fgm}-#{@fga}",
-      "#{@ftm}-#{@fta}",
-      "#{@tpm}-#{@tpa}",
-      "#{@pts}-#{@reb}-#{@ast}",
-      "#{@stl}-#{@blk}-#{@to}"]
-  end
-
   def to_html
     if ENV['PLAYERS'] && (ENV['PLAYERS'].split(/\s*,\s*/).map { |id| id.to_i }.include? (@id))
       data_theme = "e"
     elsif @r['TOT'] >= 0
       data_theme = "b"
-    elsif @r['TOT'] >= -5
-      data_theme = "c"
     else
       data_theme = "a"
     end
 
-    # TODO Add rating as a count bubble: http://www.intelligrape.com/blog/2012/10/18/setting-count-bubble-in-jquery-mobile-accordian-head/
-    # TODO Include parent box score (for minutes played and game log link)
+    # TODO add rating as a count bubble: http://www.intelligrape.com/blog/2012/10/18/setting-count-bubble-in-jquery-mobile-accordian-head/
+    # TODO include parent box score (for minutes played and game log link)
 
     fname = @fname.gsub(/\s/, '%20')
     lname = @lname.gsub(/\s/, '%20')
     output = <<END
 		<div data-role="collapsible" data-theme="#{data_theme}" data-content-theme="#{data_theme}">
-			<h3>#{@fname} #{@lname} [#{@min}/48, #{@r['TOT'].to_i}]</h3>
-			<ul data-role="listview" data-inset="false" data-theme="c">
+			<h3>#{@fname} #{@lname} [#{@r['TOT'].to_i}] [#{@min}] [#{@bs.min}]</h3>
+			<ul data-role="listview" data-inset="false" data-theme="d">
 				<li>#{@fgm}-#{@fga} #{@ftm}-#{@fta} #{@tpm}-#{@tpa}, #{@pts}-#{@reb}-#{@ast}, #{@stl}-#{@blk}-#{@to}</li>
 				<li><a href="#">Profile</a></li>
 				<li><a target="_blank" href="http://basketball.fantasysports.yahoo.com/nba/86590/playersearch?&amp;search=#{fname}%20#{lname}">Yahoo Search</a></li>

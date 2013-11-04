@@ -32,11 +32,15 @@ get '/ratings' do
 		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css" />
 		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
+		<style type="text/css">
+			.ui-content                      { padding : 0px 15px; }
+			.ui-collapsible-set              { margin  : 0;        }
+		</style>
 	</head>
 	<body><div data-role="page"><div data-role="content"><div data-role="collapsible-set" data-inset="false">
 END
 
-  bses.each { |bse| output << bse.to_html }
+  bses.each { |bse| output << bse.to_html if bse.played? }
 
   output << <<END
 	</div></div></div></body>
