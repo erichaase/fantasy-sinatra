@@ -1,7 +1,7 @@
 class BoxScoreEntry
   def initialize (bs, json)
     @bs             = bs
-    @id             = json['id'].to_i
+    @pid            = json['id'].to_i
     @fname          = json['firstName']
     @lname          = json['lastName']
     @positionAbbrev = json['positionAbbrev']
@@ -55,7 +55,7 @@ class BoxScoreEntry
   end
 
   def to_html
-    if ENV['PLAYERS'] && (ENV['PLAYERS'].split(/\s*,\s*/).map { |id| id.to_i }.include? (@id))
+    if ENV['PLAYERS'] && (ENV['PLAYERS'].split(/\s*,\s*/).map { |pid| pid.to_i }.include? (@pid))
       data_theme = "e"
     elsif @r['TOT'] >= 0
       data_theme = "b"
@@ -70,15 +70,18 @@ class BoxScoreEntry
     lname = @lname.gsub(/\s/, '%20')
     output = <<END
 		<div data-role="collapsible" data-theme="#{data_theme}" data-content-theme="#{data_theme}">
-			<h3>#{@fname} #{@lname} [#{@r['TOT'].to_i}] #{@bs.live? ? "<" : "["}#{@min}/#{@bs.min}#{@bs.live? ? ">" : "]"}</h3>
+			<h3>#{@fname} #{@lname} #{@bs.live? ? "<" : "["}#{@min}/#{@bs.min}#{@bs.live? ? ">" : "]"} [#{@r['TOT'].to_i}]</h3>
 			<ul data-role="listview" data-inset="false" data-theme="d">
 				<li>#{@fgm}-#{@fga} #{@ftm}-#{@fta} #{@tpm}-#{@tpa}, #{@pts}-#{@reb}-#{@ast}, #{@stl}-#{@blk}-#{@to}</li>
-				<li><a href="#">Profile</a></li>
+				<li><a target="_blank" href="/player/#{@pid}">Profile</a></li>
 				<li><a target="_blank" href="http://basketball.fantasysports.yahoo.com/nba/86590/playersearch?&amp;search=#{fname}%20#{lname}">Yahoo Search</a></li>
-				<li><a target="_blank" href="http://espn.go.com/nba/player/gamelog/_/id/#{@id}/">Game Log</a></li>
-				<li><a href="#">Box Score</a></li>
-				<li><a href="#">Depth Chart</a></li>
 				<li><a target="_blank" href="http://www.rotoworld.com/content/playersearch.aspx?searchname=#{lname},%20#{fname}">Rotoworld</a></li>
+				<li><a target="_blank" href="http://scores.espn.go.com/nba/boxscore?gameId=#{@bs.gid}">Box Score</a></li>
+				<li><a target="_blank" href="http://espn.go.com/nba/player/gamelog/_/id/#{@pid}/">Game Log</a></li>
+				<!--
+				<li>Depth Chart</li>
+				<li>Add/Remove Player</li>
+				-->
 			</ul>
 		</div>
 END

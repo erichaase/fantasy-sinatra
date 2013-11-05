@@ -37,7 +37,7 @@ get '/ratings' do
 			.ui-collapsible-set { margin  : 0;        }
 		</style>
 	</head>
-	<body><div data-role="page"><div data-role="content"><div data-role="collapsible-set" data-inset="false">
+	<body><div data-role="page"><div data-role="content"><div data-role="collapsible-set" data-inset="false" data-iconpos="right">
 END
 
   bses.each { |bse| output << bse.to_html if bse.played? }
