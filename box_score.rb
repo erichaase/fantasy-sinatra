@@ -14,6 +14,35 @@ class BoxScore
     @bses = []
     bses.each { |bse| @bses << BoxScoreEntry.new(self, bse) }
 
-    @min = "#{json['gamecast']['current']['gameState']}, #{json['gamecast']['current']['period']}, #{json['gamecast']['current']['clock']}"
+    @state = json['gamecast']['current']['gameState'].strip.downcase
+
+    period = json['gamecast']['current']['period']
+    case period
+    when String
+      period = period.strip.to_i
+    when Fixnum
+      period = period
+    else
+      period = 0
+    end
+
+    case period
+    when 0
+      @min = 0
+    else
+      @min = (period - 1) * 12
+    end
+
+    clock = json['gamecast']['current']['clock']
+    case clock
+    when /^\s*\d+:/
+      @min += 12 - clock.scan(/^\s*(\d+):/)[0][0].to_i
+    when /^\s*\d+\./
+      @min += 12
+    end
+  end
+
+  def live?
+    @state == "live"
   end
 end

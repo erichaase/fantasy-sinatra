@@ -70,7 +70,7 @@ class BoxScoreEntry
     lname = @lname.gsub(/\s/, '%20')
     output = <<END
 		<div data-role="collapsible" data-theme="#{data_theme}" data-content-theme="#{data_theme}">
-			<h3>#{@fname} #{@lname} [#{@r['TOT'].to_i}] [#{@min}] [#{@bs.min}]</h3>
+			<h3>#{@fname} #{@lname} [#{@r['TOT'].to_i}] #{@bs.live? ? "<" : "["}#{@min}/#{@bs.min}#{@bs.live? ? ">" : "]"}</h3>
 			<ul data-role="listview" data-inset="false" data-theme="d">
 				<li>#{@fgm}-#{@fga} #{@ftm}-#{@fta} #{@tpm}-#{@tpa}, #{@pts}-#{@reb}-#{@ast}, #{@stl}-#{@blk}-#{@to}</li>
 				<li><a href="#">Profile</a></li>
