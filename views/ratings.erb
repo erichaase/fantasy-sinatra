@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+	<head>
+		<title>NBA Player Rater</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css" />
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
+		<style type="text/css">
+			.ui-content         { padding : 0px 15px; }
+			.ui-collapsible-set { margin  : 0;        }
+		</style>
+	</head>
+	<body><div data-role="page"><div data-role="content"><div data-role="collapsible-set" data-inset="false" data-iconpos="right">
+	<% @bses.each do |bse|
+		if ENV['PLAYERS'] && (ENV['PLAYERS'].split(',').map { |pid| pid.strip.to_i }.include? (bse.pid))
+			data_theme = "e"
+		elsif bse.rating >= 0
+			data_theme = "b"
+		else
+			data_theme = "a"
+		end
+
+		fname = bse.fname.gsub(/\s/, '%20')
+		lname = bse.lname.gsub(/\s/, '%20')
+
+		# TODO add rating as a count bubble: http://www.intelligrape.com/blog/2012/10/18/setting-count-bubble-in-jquery-mobile-accordian-head/
+	%>
+		<div data-role="collapsible" data-theme="<%=data_theme%>" data-content-theme="<%=data_theme%>">
+			<h3><%="#{bse.fname} #{bse.lname}"%> <%=bse.bs.live? ? "<" : "["%><%="#{bse.min}/#{bse.bs.min}"%><%=bse.bs.live? ? ">" : "]"%> [<%=bse.rating.to_i%>]</h3>
+			<ul data-role="listview" data-inset="false" data-theme="d">
+				<li><%="#{bse.fgm}-#{bse.fga} #{bse.ftm}-#{bse.fta} #{bse.tpm}-#{bse.tpa} #{bse.pts}-#{bse.reb}-#{bse.ast} #{bse.stl}-#{bse.blk}-#{bse.to}"%></li>
+				<li><a target="_blank" href="/players/<%=bse.pid%>">Profile</a></li>
+				<li><a target="_blank" href="http://basketball.fantasysports.yahoo.com/nba/86590/playersearch?&amp;search=<%=fname%>%20<%=lname%>">Yahoo Search</a></li>
+				<li><a target="_blank" href="http://www.rotoworld.com/content/playersearch.aspx?searchname=<%=lname%>,%20<%=fname%>">Rotoworld</a></li>
+				<li><a target="_blank" href="http://scores.espn.go.com/nba/boxscore?gameId=<%=bse.bs.gid%>">Box Score</a></li>
+				<li><a target="_blank" href="http://espn.go.com/nba/player/gamelog/_/id/<%=bse.pid%>/">Game Log</a></li>
+				<!-- <li>Depth Chart</li> -->
+				<!-- <li>Add/Remove Player</li> -->
+			</ul>
+		</div>
+	<% end %>
+	</div></div></div></body>
+</html>

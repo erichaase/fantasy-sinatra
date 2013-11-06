@@ -1,3 +1,3 @@
 $stdout.sync = true
-require './fantasy'
+require './routes'
 run Sinatra::Application

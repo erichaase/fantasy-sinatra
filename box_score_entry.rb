@@ -1,89 +1,50 @@
 class BoxScoreEntry
-  def initialize (bs, json)
-    @bs             = bs
-    @pid            = json['id'].to_i
-    @fname          = json['firstName']
-    @lname          = json['lastName']
-    @positionAbbrev = json['positionAbbrev']
-    @jersey         = json['jersey'].to_i
-    @active         = json['active']
-    @isStarter      = json['isStarter']
-    @fgm            = json['fg'][/^\d+/].to_i
-    @fga            = json['fg'][/\d+$/].to_i
-    @ftm            = json['ft'][/^\d+/].to_i
-    @fta            = json['ft'][/\d+$/].to_i
-    @tpm            = json['threept'][/^\d+/].to_i
-    @tpa            = json['threept'][/\d+$/].to_i
-    @reb            = json['rebounds'].to_i
-    @ast            = json['assists'].to_i
-    @stl            = json['steals'].to_i
-    @fouls          = json['fouls'].to_i
-    @pts            = json['points'].to_i
-    @min            = json['minutes'].to_i
-    @blk            = json['blocks'].to_i
-    @to             = json['turnovers'].to_i
-    @plusMinus      = json['plusMinus'].to_i
+  attr_reader :bs, :pid, :fname, :lname, :min, :fgm, :fga, :ftm, :fta, :tpm, :tpa, :pts, :reb, :ast, :stl, :blk, :to
 
-    # TODO verify calculation of ratings
-    @r = {}
-    if (json['fg'][/\s*-\s*/])
-      @r['TOT'] = -99.0
-    else
-      @r['FGP'] = @fga == 0 ? 0 : (@fgm.to_f / @fga.to_f - 0.464) * (@fga.to_f / 20.1) * 97.6
-      @r['FTP'] = @fta == 0 ? 0 : (@ftm.to_f / @fta.to_f - 0.790) * (@fta.to_f / 11.7) * 78.1
-      @r['3PM'] = (@tpm - 0.9 ) * 3.5
-      @r['PTS'] = (@pts - 15.6) * 0.5
-      @r['REB'] = (@reb - 5.6 ) * 0.9
-      @r['AST'] = (@ast - 3.7 ) * 1.1
-      @r['STL'] = (@stl - 1.1 ) * 6.4
-      @r['BLK'] = (@blk - 0.6 ) * 4.9
-      @r['TO']  = (@to  - 2.0 ) * -3.4
-      @r['TOT'] = @r['FGP'] + @r['FTP'] + @r['3PM'] + @r['PTS'] + @r['REB'] + @r['AST'] + @r['STL'] + @r['BLK'] + @r['TO']
-    end
+  def initialize (bs, json)
+    @bs    = bs
+    @pid   = json['id'].to_i
+    @fname = json['firstName'].strip
+    @lname = json['lastName'].strip
+    @min   = json['minutes'].to_i
+    @fgm   = json['fg'][/^\d+/].to_i
+    @fga   = json['fg'][/\d+$/].to_i
+    @ftm   = json['ft'][/^\d+/].to_i
+    @fta   = json['ft'][/\d+$/].to_i
+    @tpm   = json['threept'][/^\d+/].to_i
+    @tpa   = json['threept'][/\d+$/].to_i
+    @pts   = json['points'].to_i
+    @reb   = json['rebounds'].to_i
+    @ast   = json['assists'].to_i
+    @stl   = json['steals'].to_i
+    @blk   = json['blocks'].to_i
+    @to    = json['turnovers'].to_i
+    # others: json['active'], json['fouls'], json['isStarter'], json['jersey'], json['plusMinus'], json['positionAbbrev']
   end
 
   def played?
     @min > 0
   end
 
+  def <=> (o)
+    o.rating <=> self.rating
+  end
+
+  # TODO verify calculation of rating
   def rating
-    @r['TOT']
-  end
-
-  def <=> (x)
-    x.rating <=> self.rating
-  end
-
-  def to_html
-    if ENV['PLAYERS'] && (ENV['PLAYERS'].split(/\s*,\s*/).map { |pid| pid.to_i }.include? (@pid))
-      data_theme = "e"
-    elsif @r['TOT'] >= 0
-      data_theme = "b"
+    if played?
+      fgp = @fga == 0 ? 0 : (@fgm.to_f / @fga.to_f - 0.464) * (@fga.to_f / 20.1) * 97.6
+      ftp = @fta == 0 ? 0 : (@ftm.to_f / @fta.to_f - 0.790) * (@fta.to_f / 11.7) * 78.1
+      tpm = (@tpm - 0.9 ) * 3.5
+      pts = (@pts - 15.6) * 0.5
+      reb = (@reb - 5.6 ) * 0.9
+      ast = (@ast - 3.7 ) * 1.1
+      stl = (@stl - 1.1 ) * 6.4
+      blk = (@blk - 0.6 ) * 4.9
+      to  = (@to  - 2.0 ) * -3.4
+      fgp + ftp + tpm + pts + reb + ast + stl + blk + to
     else
-      data_theme = "a"
+      -100.00
     end
-
-    # TODO add rating as a count bubble: http://www.intelligrape.com/blog/2012/10/18/setting-count-bubble-in-jquery-mobile-accordian-head/
-    # TODO include parent box score (for minutes played and game log link)
-
-    fname = @fname.gsub(/\s/, '%20')
-    lname = @lname.gsub(/\s/, '%20')
-    output = <<END
-		<div data-role="collapsible" data-theme="#{data_theme}" data-content-theme="#{data_theme}">
-			<h3>#{@fname} #{@lname} #{@bs.live? ? "<" : "["}#{@min}/#{@bs.min}#{@bs.live? ? ">" : "]"} [#{@r['TOT'].to_i}]</h3>
-			<ul data-role="listview" data-inset="false" data-theme="d">
-				<li>#{@fgm}-#{@fga} #{@ftm}-#{@fta} #{@tpm}-#{@tpa}, #{@pts}-#{@reb}-#{@ast}, #{@stl}-#{@blk}-#{@to}</li>
-				<li><a target="_blank" href="/player/#{@pid}">Profile</a></li>
-				<li><a target="_blank" href="http://basketball.fantasysports.yahoo.com/nba/86590/playersearch?&amp;search=#{fname}%20#{lname}">Yahoo Search</a></li>
-				<li><a target="_blank" href="http://www.rotoworld.com/content/playersearch.aspx?searchname=#{lname},%20#{fname}">Rotoworld</a></li>
-				<li><a target="_blank" href="http://scores.espn.go.com/nba/boxscore?gameId=#{@bs.gid}">Box Score</a></li>
-				<li><a target="_blank" href="http://espn.go.com/nba/player/gamelog/_/id/#{@pid}/">Game Log</a></li>
-				<!--
-				<li>Depth Chart</li>
-				<li>Add/Remove Player</li>
-				-->
-			</ul>
-		</div>
-END
   end
 end

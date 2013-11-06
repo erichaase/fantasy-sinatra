@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+	<head>
+		<title>NBA Player Rater</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+		<style type="text/css">
+			body { background-color: #002b36; }
+		</style>
+	</head>
+	<body><script type="text/javascript">
+		var ds_minutes = [ 18, 24,  19, 27,  37, 22, 30, 48, 35, 31,   5,  18,  24,  19, 27, 37, 22, 30, 48, 35, 31,   5];
+		var ds_ratings = [-15, -5, -10,  5,  10,  0,  5, 10,  7,  4, -20, -15,  -5, -10,  5, 10,  0,  5, 10,  7,  4, -20];
+
+		var w = 304;
+		var h = 496;
+		var padding = 20;
+
+		var xsm = d3.scale.linear()
+			.domain([0, 48])
+			.range([padding, w - padding]);
+
+		var ysm = d3.scale.linear()
+			.domain([0, ds_minutes.length - 1])
+			.range([padding, h - padding]);
+
+		var xsr = d3.scale.linear()
+			.domain([-20, 10])
+			.range([padding, w - padding]);
+
+		var ysr = d3.scale.linear()
+			.domain([0, ds_ratings.length - 1])
+			.range([padding, h - padding]);
+
+		var svg = d3.select("body")
+			.append("svg")
+			.attr("width", w)
+			.attr("height", h);
+
+		svg.selectAll(".minLine")
+			.data(ds_minutes.slice(0, ds_minutes.length - 1)).enter().append("line")
+			.attr("class",  "minLine")
+			.attr("stroke", "#859900")
+			.attr("x1", function(d, i) { return xsm(d); })
+			.attr("y1", function(d, i) { return ysm(i); })
+			.attr("x2", function(d, i) { return xsm(ds_minutes[i+1]); })
+			.attr("y2", function(d, i) { return ysm(i + 1); });
+
+		svg.selectAll(".ratingLine")
+			.data(ds_ratings.slice(0, ds_minutes.length - 1)).enter().append("line")
+			.attr("class",  "ratingLine")
+			.attr("stroke", "#d33682")
+			.attr("x1", function(d, i) { return xsr(d); })
+			.attr("y1", function(d, i) { return ysr(i); })
+			.attr("x2", function(d, i) { return xsr(ds_ratings[i+1]); })
+			.attr("y2", function(d, i) { return ysr(i+1); });
+
+		svg.selectAll("text")
+			.data(ds_minutes).enter().append("text")
+			.attr("font-family",        "sans-serif")
+			.attr("font-size",          "10px")
+			.attr("text-anchor",        "middle")
+			.attr("alignment-baseline", "middle")
+			.attr("fill",               "#268bd2")
+			.style("text-shadow",       "0 0")
+			.text(function(d, i)      { return d + "m " + ds_ratings[i] + "r" })
+			.attr("x", function(d, i) { return (xsm(d) + xsr(ds_ratings[i])) / 2; })
+			.attr("y", function(d, i) { return ysm(i); });
+	</script></body>
+</html>
