@@ -10,8 +10,8 @@
 		</style>
 	</head>
 	<body><script type="text/javascript">
-		var ds_minutes = [ 18, 24,  19, 27,  37, 22, 30, 48, 35, 31,   5,  18,  24,  19, 27, 37, 22, 30, 48, 35, 31,   5];
-		var ds_ratings = [-15, -5, -10,  5,  10,  0,  5, 10,  7,  4, -20, -15,  -5, -10,  5, 10,  0,  5, 10,  7,  4, -20];
+		var ds_minutes = <%= @ds_minutes.to_s %>;
+		var ds_ratings = <%= @ds_ratings.to_s %>;
 
 		var w = 304;
 		var h = 496;
@@ -26,7 +26,10 @@
 			.range([padding, h - padding]);
 
 		var xsr = d3.scale.linear()
-			.domain([-20, 10])
+			.domain([
+				Math.min(-20, d3.min(ds_ratings, function(d) {return d;})),
+				Math.max( 20, d3.max(ds_ratings, function(d) {return d;}))
+				])
 			.range([padding, w - padding]);
 
 		var ysr = d3.scale.linear()
@@ -64,7 +67,7 @@
 			.attr("alignment-baseline", "middle")
 			.attr("fill",               "#268bd2")
 			.style("text-shadow",       "0 0")
-			.text(function(d, i)      { return d + "m " + ds_ratings[i] + "r" })
+			.text(function(d, i)      { return d + "m " + ds_ratings[i] + "p" })
 			.attr("x", function(d, i) { return (xsm(d) + xsr(ds_ratings[i])) / 2; })
 			.attr("y", function(d, i) { return ysm(i); });
 	</script></body>
