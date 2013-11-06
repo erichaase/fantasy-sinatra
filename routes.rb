@@ -1,7 +1,5 @@
 require 'sinatra'
-require './score_board'
-
-# TODO reorganize file hierarchy (models/, etc.)
+require_relative 'models/score_board'
 
 get '/' do
   redirect '/ratings'

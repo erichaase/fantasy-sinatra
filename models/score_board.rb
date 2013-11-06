@@ -1,6 +1,6 @@
 require 'open-uri'
 require 'date'
-require './box_score'
+require_relative 'box_score'
 
 class ScoreBoard
   SB_URI  = "http://scores.espn.go.com/nba/scoreboard?date=%s"

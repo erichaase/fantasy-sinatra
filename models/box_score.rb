@@ -1,6 +1,6 @@
 require 'open-uri'
 require 'json'
-require './box_score_entry'
+require_relative 'box_score_entry'
 
 class BoxScore
   attr_reader :gid, :bses, :min
