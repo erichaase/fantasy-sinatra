@@ -30,7 +30,6 @@ class BoxScoreEntry
     o.rating <=> self.rating
   end
 
-  # TODO verify calculation of rating
   def rating
     if played?
       fgp = @fga == 0 ? 0 : (@fgm.to_f / @fga.to_f - 0.464) * (@fga.to_f / 20.1) * 97.6

@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<title>NBA Player Rater</title>
-                <meta charset="utf-8">
+		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 		<style type="text/css">
@@ -10,8 +10,7 @@
 		</style>
 	</head>
 	<body><script type="text/javascript">
-		var ds_minutes = <%= @ds_minutes.to_s %>;
-		var ds_ratings = <%= @ds_ratings.to_s %>;
+		var data = <%= @d3_data %>;
 
 		var w = 304;
 		var h = 496;

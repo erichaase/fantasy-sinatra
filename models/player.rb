@@ -1,5 +1,6 @@
 require 'nokogiri'
 require 'open-uri'
+require 'json'
 
 class Player
   GL_URI = "http://espn.go.com/nba/player/gamelog/_/id/%s/"
@@ -29,22 +30,14 @@ class Player
           :stl  => tds[13].inner_html.strip.to_i,
           :pf   => tds[14].inner_html.strip.to_i,
           :to   => tds[15].inner_html.strip.to_i,
-          :pts  => tds[16].inner_html.strip.to_i,
+          :pts  => tds[16].inner_html.strip.to_i
         }
         @games << stats
       end
       row = row.next
     end
 
-    @games.reverse!
-  end
-
-  def ds_minutes
-    @games.map { |g| g[:min] }
-  end
-
-  def ds_ratings
-    @games.map do |g|
+    @games.each do |g|
       fgp = g[:fga] == 0 ? 0 : (g[:fgm].to_f / g[:fga].to_f - 0.464) * (g[:fga].to_f / 20.1) * 97.6
       ftp = g[:fta] == 0 ? 0 : (g[:ftm].to_f / g[:fta].to_f - 0.790) * (g[:fta].to_f / 11.7) * 78.1
       tpm = (g[:tpm] - 0.9 ) * 3.5
@@ -54,8 +47,20 @@ class Player
       stl = (g[:stl] - 1.1 ) * 6.4
       blk = (g[:blk] - 0.6 ) * 4.9
       to  = (g[:to]  - 2.0 ) * -3.4
-      (fgp + ftp + tpm + pts + reb + ast + stl + blk + to).to_i
+      g[:rating] = (fgp + ftp + tpm + pts + reb + ast + stl + blk + to)
     end
+  end
+
+  def d3_data
+    games = []
+    @games.each do |game|
+      games << {
+        "date"    => game[:date],
+        "minutes" => game[:min],
+        "rating"  => game[:rating],
+      }
+    end
+    games.to_json
   end
 end
 

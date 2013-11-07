@@ -23,8 +23,6 @@ get '/players/:pid' do
   pid = params[:pid].strip
   raise "Invalid pid URL: '#{pid}'" if not pid[/^\d+$/]
 
-  player = Player.new(pid.to_i)
-  @ds_minutes = player.ds_minutes
-  @ds_ratings = player.ds_ratings
+  @d3_data = Player.new(pid.to_i).d3_data
   erb :players
 end
