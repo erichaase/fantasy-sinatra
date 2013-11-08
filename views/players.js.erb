@@ -1,0 +1,81 @@
+var data = <%= @d3_data %>;
+
+var margin = { top: 30, bottom: 10, left: 10, right: 10 };
+var width  = 152 - margin.left - margin.right;
+var height = 480 - margin.top  - margin.bottom;
+
+var xm = d3.scale.linear()
+	.domain([0,48])
+	.range([0, width])
+	.nice();
+
+var xr = d3.scale.linear()
+	.domain([
+		Math.min(-20, d3.min(data, function(d) {return d.rating;})),
+		Math.max( 20, d3.max(data, function(d) {return d.rating;}))
+	])
+	.range([0, width])
+	.nice();
+
+var y = d3.scale.ordinal()
+	.domain(data.map(function(d) { return d.date; }))
+	.rangeRoundBands([0, height], 0.1);
+
+var svg = d3.select("body").append("svg")
+	.attr("width",  width  + margin.left + margin.right)
+	.attr("height", height + margin.top  + margin.bottom)
+	.append("g")
+	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.selectAll(".minutes").data(data).enter().append("rect")
+	.attr("class", function(d) { return d.minutes < 30 ? "minutes negative" : "minutes positive"; })
+	.attr("x", function(d) { return xm(Math.min(0, d.minutes)); })
+	.attr("y", function(d) { return y(d.date); })
+	.attr("width", function(d) { return Math.abs(xm(d.minutes) - xm(0)); })
+	.attr("height", y.rangeBand());
+
+var xAxis = d3.svg.axis()
+	.scale(xm)
+	.orient("top");
+
+svg.append("g")
+	.attr("class", "x axis")
+	.call(xAxis);
+
+svg.append("g")
+	.attr("class", "y axis")
+	.append("line")
+	.attr("x1", xm(0))
+	.attr("y1", 0)
+	.attr("x2", xm(0))
+	.attr("y2", height);
+
+var svg = d3.select("body").append("svg")
+	.attr("width",  width  + margin.left + margin.right)
+	.attr("height", height + margin.top  + margin.bottom)
+	.append("g")
+	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.selectAll(".rating").data(data).enter().append("rect")
+	.attr("class", function(d) { return d.rating < 0 ? "rating negative" : "rating positive"; })
+	.attr("x", function(d) { return xr(Math.min(0, d.rating)); })
+	.attr("y", function(d) { return y(d.date); })
+	.attr("width", function(d) { return Math.abs(xr(d.rating) - xr(0)); })
+	.attr("height", y.rangeBand());
+
+var xAxis = d3.svg.axis()
+	.scale(xr)
+	.orient("top");
+
+svg.append("g")
+	.attr("class", "x axis")
+	.call(xAxis);
+
+svg.append("g")
+	.attr("class", "y axis")
+	.append("line")
+	.attr("x1", xr(0))
+	.attr("y1", 0)
+	.attr("x2", xr(0))
+	.attr("y2", height);
+

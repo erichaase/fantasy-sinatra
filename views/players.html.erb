@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+	<head>
+		<title>NBA Player Rater</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+		<style type="text/css">
+.positive {
+  fill: steelblue;
+}
+
+.negative {
+  fill: brown;
+}
+
+.axis text {
+  font: 6px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+		</style>
+	</head>
+	<body><script type="text/javascript">
+<%= erb "players.js".to_sym %>
+	</script></body>
+</html>

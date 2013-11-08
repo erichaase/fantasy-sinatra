@@ -8,7 +8,7 @@ end
 
 get '/ratings' do
   @bses = ScoreBoard.new.bses
-  erb :ratings
+  erb "ratings.html".to_sym
 end
 
 get '/ratings/:date' do
@@ -16,7 +16,7 @@ get '/ratings/:date' do
   raise "Invalid date URL: '#{date}'" if not date[/^1[34]\d{4}$/]
 
   @bses = ScoreBoard.new(date).bses
-  erb :ratings
+  erb "ratings.html".to_sym
 end
 
 get '/players/:pid' do
@@ -24,5 +24,5 @@ get '/players/:pid' do
   raise "Invalid pid URL: '#{pid}'" if not pid[/^\d+$/]
 
   @d3_data = Player.new(pid.to_i).d3_data
-  erb :players
+  erb "players.html".to_sym
 end
