@@ -3,10 +3,11 @@ require_relative 'models/score_board'
 require_relative 'models/player'
 
 get '/' do
-  redirect '/ratings'
+  erb ""
 end
 
 get '/ratings' do
+  @navid = :today
   @bses = ScoreBoard.new.bses
   erb "ratings.html".to_sym
 end
@@ -24,5 +25,5 @@ get '/players/:pid' do
   raise "Invalid pid URL: '#{pid}'" if not pid[/^\d+$/]
 
   @d3_data = Player.new(pid.to_i).d3_data
-  erb "players.html".to_sym
+  erb "players.html".to_sym, :layout => false
 end
