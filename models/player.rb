@@ -12,7 +12,7 @@ class Player
     doc = Nokogiri::HTML(open(GL_URI % pid.to_s).read)
     header = doc.css("table.tablehead tr.stathead").first
     row = header.next
-    while row['class'] != 'stathead'
+    while row && row['class'] != 'stathead'
       if row['class'][/(oddrow|evenrow)\s+team/]
         tds = row.children
         stats = {
