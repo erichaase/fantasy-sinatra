@@ -14,7 +14,7 @@ end
 
 get '/ratings/:date' do
   date = params[:date].strip
-  raise "Invalid date URL: '#{date}'" if not date[/^1[34]\d{4}$/]
+  raise "Invalid date URL: '#{date}'" if not date[/^1[345]\d{4}$/]
 
   @bses = ScoreBoard.new(date).bses
   erb "ratings.html".to_sym
