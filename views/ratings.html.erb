@@ -18,7 +18,7 @@
 		<ul data-role="listview" data-inset="false" data-theme="d">
 			<li><%="#{bse.fgm}-#{bse.fga} #{bse.ftm}-#{bse.fta} #{bse.tpm}-#{bse.tpa} #{bse.pts}-#{bse.reb}-#{bse.ast} #{bse.stl}-#{bse.blk}-#{bse.to}"%></li>
 			<li><a target="_blank" href="/players/<%=bse.pid%>">Profile</a></li>
-			<li><a target="_blank" href="http://basketball.fantasysports.yahoo.com/nba/77128/playersearch?&amp;search=<%=fname%>%20<%=lname%>">Yahoo Search</a></li>
+			<li><a target="_blank" href="http://basketball.fantasysports.yahoo.com/nba/<%=ENV['LEAGUE_ID']%>/playersearch?&amp;search=<%=fname%>%20<%=lname%>">Yahoo Search</a></li>
 			<li><a target="_blank" href="http://www.rotoworld.com/content/playersearch.aspx?searchname=<%=lname%>,%20<%=fname%>">Rotoworld</a></li>
 			<li><a target="_blank" href="http://scores.espn.go.com/nba/boxscore?gameId=<%=bse.bs.gid%>">Box Score</a></li>
 			<li><a target="_blank" href="http://espn.go.com/nba/player/gamelog/_/id/<%=bse.pid%>/">Game Log</a></li>
