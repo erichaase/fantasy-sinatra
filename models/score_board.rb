@@ -1,18 +1,18 @@
 require 'open-uri'
 require 'date'
+require 'json'
 require_relative 'box_score'
 
 class ScoreBoard
-  SB_URI  = "http://scores.espn.go.com/nba/scoreboard?date=%s"
-  GIDS_RE = %r|/nba/boxscore\?gameId=(\d+)|
+  SB_URI  = "http://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?lang=en&region=us&calendartype=blacklist&limit=100&dates=%s"
 
   def initialize (d=nil)
     date = d ? Date.new(2000 + d[0,2].to_i, d[2,2].to_i, d[4,2].to_i) : Date.today
 
     gids = []
     while gids.empty?
-      url  = SB_URI % date.strftime("%Y%m%d")
-      gids = open(url).read.scan(GIDS_RE).map { |gid| gid[0].strip.to_i }.uniq
+      json = JSON.parse(open(SB_URI % date.strftime("%Y%m%d")).read.scan(/[[:print:]]/).join)
+      gids = json['events'].select { |e| e['status']['type']['state'] != 'pre' }.map { |e| e['id'].to_i }.uniq
       date -= 1
     end
 
