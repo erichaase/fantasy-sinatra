@@ -12,7 +12,7 @@ class ScoreBoard
     gids = []
     while gids.empty?
       json = JSON.parse(open(SB_URI % date.strftime("%Y%m%d")).read.scan(/[[:print:]]/).join)
-      gids = json['events'].select { |e| e['status']['type']['state'] != 'pre' }.map { |e| e['id'].to_i }.uniq
+      gids = json['events'].reject { |e| e['status']['type']['state'] == 'pre' }.map { |e| e['id'].to_i }.uniq
       date -= 1
     end
 
